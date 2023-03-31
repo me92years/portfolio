@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{layout/base :: setContent(~{this::content})}">
+	<th:block th:fragment="content">
+		<main-wrap>
+		</main-wrap>
+		
+		<template id="main">
+			<search-wrap></search-wrap>
+			<movies-wrap></movies-wrap>
+			<style>
+				:host {
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					position: absolute;
+					top: 100px;
+					width: 100%;
+					height: 860px;
+					border-top: 1px solid #aaa;
+					background-color: #333;
+				}
+				
+				search-wrap {
+					width: 80%;
+					height: auto;
+					margin: 60px;
+					color: #fff;
+				} h1.welcome {
+					margin: 0; 
+					font-size: 40px;
+				} h2.welcome {  
+					margin: 16px 0 0 0;
+					font-size: 32px; 
+				}  .form-group {
+					display: grid;
+					grid-template-columns: 80% 20%;
+					grid-template-rows: 40px;
+					margin: 16px 0;
+					width: 100%;
+					height: auto;
+				} .form-group .search-text {
+					border: none;
+					border-radius: 16px 0 0 16px;
+					padding: 0 16px;
+					font-size: 24px;
+				} .form-group .search-submit {
+					border: none;
+					border-radius: 0 16px 16px 0;
+					color: white;
+					background-color: #222;
+				} .form-group .search-submit:hover {
+					color: #ffff99;
+					background-color: #a54aff;
+				}
+				
+				movies-wrap {
+					width: 100%;
+					height: 350px;
+					color: #fff;
+				} article {
+					display: grid;
+					grid-template-columns: repeat(10, 200px);
+					justify-items: right;
+					width: 100%;
+					height: 100%;
+					overflow-x: scroll;
+				}
+				
+				movies-wrap .card {
+					width: 140px;
+				} .card img {
+					width: 100%;
+					border-radius: 16px;
+				} .card .card-body {
+					margin-top: 16px;
+					margin-left: 6px;
+				}	.card .card-body .card-title {
+					margin: 0;
+					font-size: 18px;
+					font-weight: bold;
+					text-decoration: none;
+					color: white;
+				} .card .card-body .card-title:hover {
+					color: #a54aff;
+				}	.card .card-body .card-date{
+					margin: 0;
+					margin-top: 3px;
+					color: #aaa;
+					font-size: 16px;
+				}
+				
+			</style>
+		</template>
+		
+		<template id="searchWrap">
+			<h1 class="welcome">환영합니다!</h1>
+			<h2 class="welcome">많은 영화와 인물들을 찾아보세요!</h2>
+			<form th:action="@{/search}">
+				<div class="form-group">
+					<input type="hidden" name="type" value="search">
+					<input class="search-text" type="text" name="keyword">
+					<button class="search-submit" type="submit">Search</button>
+				</div>
+			</form>
+		</template>
+		
+		<template id="moviesWrap">
+			<article>
+				<div class="card" th:each="movie : ${movies.dtoList}" th:data-no="${movie.no}">
+					<img th:src="@{/api/thumbnail(img=${movie.poster})}">
+					<div class="card-body">
+						<a class="card-title" th:href="@{/detail}">[[${movie.title}]]</a>
+						<p class="card-date">[[${movie.openingDate}]]</p>
+					</div>
+				</div>
+			</article>
+		</template>
+		
+		<script th:inline="javascript">
+			// header-wrap
+    	class SearchWrap extends HTMLElement {
+      	constructor() {
+        	super();
+				  this.innerHTML = searchWrap.innerHTML;
+      	}
+    	}
+			
+			// movies-wrap
+      class MoviesWrap extends HTMLElement {
+        constructor() {
+          super();
+          this.innerHTML = moviesWrap.innerHTML;
+        }
+        connectedCallback() {
+          this.addEvent('click', '.card-title', (e) => {
+            e.preventDefault();
+            const card = e.target.closest('.card');
+            window.location.href = e.target.href + "/" +card.dataset.no;
+          });
+        }
+        addEvent(event, selector, callback) {
+          this.addEventListener(event, (e) => {
+						if (e.target.closest(selector)) {
+							callback(e);
+						};
+					});
+        }
+      }
+      
+      // main-wrap
+      customElements.define('main-wrap', class extends HTMLElement {
+				constructor() {
+				  super();
+				  this.attachShadow({ mode: 'open' });
+				  this.shadowRoot.append(main.content.cloneNode(true));
+				  customElements.define('search-wrap', SearchWrap);
+          customElements.define('movies-wrap', MoviesWrap);
+        }
+      });
+      
+		</script>
+	</th:block>
+</th:block>
+</html>

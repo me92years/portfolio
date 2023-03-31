@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{layout/base :: setContent(~{this::content})}">
+	<th:block th:fragment="content">
+		<main-wrap></main-wrap>
+		<template id="mainWrap">
+			<movie-wrap></movie-wrap>
+			<actor-wrap></actor-wrap>
+			<detail-wrap></detail-wrap>
+			<style>
+				:host {
+					position: absolute;
+					top: 100px;
+					width: 100%;
+					height: 979px;
+					border-top: 1px solid #ccc;
+					background-color: #333;
+				}
+			</style>
+		</template>
+		
+		<template id="movieWrap">
+			<img class="poster" th:src="@{/api/thumbnail(img=${movie.poster})}">
+			<div class="body">
+				<h1>[[${movie.title}]]</h1>
+				<div class="inner-group">
+					<p>[[${movie.rRate}]]</p>
+					<p>[[${movie.genre}]]</p>
+					<p>[[${movie.openingDate}]]</p>
+				</div>
+				<h2>개요</h2>
+				<p>[[${movie.synopsis}]]</p>
+				<h2>제작자</h2>
+				<div class="creator-group">
+					<div class="creator-card" th:each="creator : ${movie.creators}">
+						<p>[[${creator.name}]]</p>
+						<p>[[${creator.jobTitle}]]</p>
+					</div>
+				</div>
+			</div>
+			<style>
+				movie-wrap {
+					display: grid;
+					grid-template-columns: 40% 40%;
+					padding: 24px;
+					color: #fff;
+				}
+				movie-wrap .poster {
+					justify-self: right;
+					height: 450px;
+				}
+				movie-wrap .body { 
+					margin-left: 16px; justify-self: left; 
+				}
+				movie-wrap .body h1 { margin: 0 0 16px 0; }
+				movie-wrap .body h2 { margin: 24px 0 16px 0; }
+				movie-wrap .body .inner-group {
+					display: flex;
+					flex-wrap: wrap;
+				}
+				movie-wrap .body .inner-group p { 
+					margin: 0;
+					padding: 4px;
+					border: 1px solid #333; 
+				}
+				movie-wrap .body .inner-group p:nth-child(1) {
+					border: 1px solid #FFF;	
+				} 
+				movie-wrap .body .creator-group {
+					display: grid;
+					grid-template-columns: 1fr 1fr 1fr;
+					column-gap: 16px;
+					row-gap: 16px;
+				}
+				movie-wrap .body .creator-group p { margin: 0; }
+				movie-wrap .body .creator-group p:nth-child(1) { font-weight: bold; }
+				movie-wrap .body .creator-group p:nth-child(2) { color: #ccc; }
+			</style>
+		</template>
+		
+		<template id="actorWrap">
+			<h2>주요 출연진</h2>
+			<div class="actor-group">
+				<div class="card" th:each="actor : ${movie.actors}">
+					<img th:src="@{/api/thumbnail(img=${actor.portrait})}">
+					<div class="card-body">
+						<p>[[${actor.realName}]]</p>
+						<p>[[${actor.nickName}]]</p>
+					</div>
+				</div>
+			</div>
+			<style>
+				actor-wrap {
+					position: relative;
+					left: 20%;
+					float: left;
+					width: 49%;
+					height: auto;
+					color: white;
+				}
+				actor-wrap h2 { margin: 0 0 24px 32px; }
+				actor-wrap .actor-group {
+					display: flex;
+					width: 100%;
+					height: auto;
+					overflow-x: scroll;
+				}
+				actor-wrap .actor-group img {
+					width: 90%;
+					border-radius: 16px;
+				}
+				.actor-group .card {
+					padding: 12px 6px;
+				}
+				.actor-group .card-body p { margin: 4px 6px; }
+				.actor-group .card-body p:nth-child(1) { font-weight: bold; }
+				.actor-group .card-body p:nth-child(2) { color: #ccc; } 
+			</style>
+		</template>
+		
+		<template id="detailWrap">
+			<div class="detail-group">
+				<div class="text-group">
+					<h3>원제</h3>
+					<p>[[${movie.originalTitle}]]</p>
+				</div>
+				<div class="text-group">
+					<h3>상태</h3>
+					<p>[[${movie.status}]]</p>
+				</div>
+				<div class="text-group">
+					<h3>원어</h3>
+					<p>[[${movie.originalLauguage}]]</p>
+				</div>
+				<div class="text-group">
+					<h3>제작비</h3>
+					<p>[[${movie.productionCosts}]]</p>
+				</div>
+				<div class="text-group">
+					<h3>수익</h3>
+					<p>[[${movie.revenue}]]</p>
+				</div>
+			</div>
+			<style>
+				detail-wrap {
+					display: block;
+					float: right;
+					top: 200px;
+					width: 30%;
+					height: auto;
+					min-height: 200px;
+					color: #fff;
+				}
+				detail-wrap .detail-group { padding: 0 12px;}
+				detail-wrap .detail-group .text-group h3 { 
+					margin: 12px 0 0 0;
+					color: #a54aff; 
+				}
+				detail-wrap .detail-group .text-group p {
+					margin: 4px 0 4px 0;
+				}
+			</style>
+		</template>
+		
+		<script th:inline="javascript">
+		
+			// main-wrap
+			customElements.define('main-wrap', class extends HTMLElement {
+			  constructor() {
+			    super();
+			    this.attachShadow({ mode: 'open' });
+					this.shadowRoot.append(mainWrap.content.cloneNode(true));
+					
+					// movie-wrap
+					customElements.define('movie-wrap', class extends HTMLElement {
+					  constructor() {
+					    super();
+					    this.innerHTML = movieWrap.innerHTML;
+					  }
+					});
+					
+					// actors-wrap
+					customElements.define('actor-wrap', class extends HTMLElement {
+					  constructor() {
+					    super();
+					    this.innerHTML = actorWrap.innerHTML;
+					  }
+					});
+					
+					// detail-wrap
+					customElements.define('detail-wrap', class extends HTMLElement {
+					  constructor() {
+					    super();
+					    this.innerHTML = detailWrap.innerHTML;
+					  }
+					});
+			  }
+			});
+			
+		</script>
+		
+	</th:block>
+</th:block>
+</html>

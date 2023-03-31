@@ -1,0 +1,21 @@
+spring:
+  config:
+    activate:
+      on-profile:
+      - "local"
+    import:
+    - "classpath:/application-local.properties"
+    - "classpath:/application-oauth.properties"
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile:
+      - "prod"
+    import:
+    - "file:/home/ec2-user/app/portfolio/config/application-prod.properties"
+    - "file:/home/ec2-user/app/portfolio/config/application-oauth.properties"
+    
+---
