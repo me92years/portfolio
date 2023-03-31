@@ -15,7 +15,7 @@ spring:
       on-profile:
       - "prod"
     import:
-    - "file:/home/ec2-user/app/portfolio/config/application-prod.properties"
-    - "file:/home/ec2-user/app/portfolio/config/application-oauth.properties"
+    - "file:/home/ec2-user/app/config/application-prod.properties"
+    - "file:/home/ec2-user/app/config/application-oauth.properties"
     
 ---
