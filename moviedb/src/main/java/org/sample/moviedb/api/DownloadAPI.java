@@ -21,8 +21,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.log4j.Log4j2;
+
 @RestController
 @RequestMapping("/api")
+@Log4j2
 public class DownloadAPI {
 
 	@Autowired
@@ -33,7 +36,9 @@ public class DownloadAPI {
 		try {
 			String uri = URLDecoder.decode(img, "utf-8");
 			Resource resource = resourceLoader.getResource("classpath:/static/img" + uri);
+			log.info("[리소스의 URL] > " + resource.getURL());
 			File file = resource.getFile();
+			log.info("[File] > " + file.getPath());
 			HttpHeaders header = new HttpHeaders();
 			header.add("Content-Type", Files.probeContentType(file.toPath()));
 			return new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
