@@ -6,7 +6,9 @@
 
 # 기술 스택
 - JDK 11
-- Back-End
+- Eclipse, VSCode, HeidiSQL
+- Gradle
+- Back-End 
   - Spring Boot v2.7.10
   - JPA, JDBC
   - Thymeleaf
@@ -22,6 +24,7 @@
   - Javascript
   - Css
   - WebComponent
+- Git
 
 # 구현 기능
 - Spring Security를 활용 해 Spring Session방식의 로그인을 구현.
