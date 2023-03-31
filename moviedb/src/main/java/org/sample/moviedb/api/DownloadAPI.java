@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -30,13 +31,11 @@ public class DownloadAPI {
 	@GetMapping("/thumbnail")
 	public ResponseEntity<byte[]> thumbnail(String img) throws IOException, URISyntaxException {
 		try {
-			Resource resource = resourceLoader.getResource("classpath:/static/img");
 			String uri = URLDecoder.decode(img, "utf-8");
-			String url = resource.getURL() + uri;
-			Path path = Path.of(new URI(url));
-			File file = path.toFile();
+			Resource resource = resourceLoader.getResource("classpath:/static/img" + uri);
+			File file = resource.getFile();
 			HttpHeaders header = new HttpHeaders();
-			header.add("Content-Type", Files.probeContentType(path));
+			header.add("Content-Type", Files.probeContentType(file.toPath()));
 			return new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
