@@ -30,6 +30,7 @@ dependencies {
 	implementation 'org.springframework.session:spring-session-jdbc'
 	implementation 'com.querydsl:querydsl-jpa:5.0.0'
 	implementation 'com.querydsl:querydsl-apt:5.0.0'
+	implementation 'org.json:json:20230227'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.h2database:h2'
@@ -69,7 +70,6 @@ compileQuerydsl.doFirst {
     if(file(querydslDir).exists() )
         delete(file(querydslDir))
 }
-
 
 tasks.named("jar") {
 	enabled = false
