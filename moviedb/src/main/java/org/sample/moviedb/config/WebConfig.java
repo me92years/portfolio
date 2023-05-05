@@ -24,10 +24,7 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**")
-			.allowedOrigins(
-					"http://localhost:8080",
-					"http://ec2-52-79-203-163.ap-northeast-2.compute.amazonaws.com:8080"
-					)
+			.allowedOrigins("http://localhost:80", "https://portfolio1.store")
 			.allowedMethods("GET", "POST")
 			.allowCredentials(true)
 			.allowedHeaders("Accept", "Authorization", "Content-Type")
